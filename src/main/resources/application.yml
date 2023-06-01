@@ -1,0 +1,7 @@
+# Configuração do banco de dados MongoDB
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mydatabase
