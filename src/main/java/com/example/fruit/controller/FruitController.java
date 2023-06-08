@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.ModelAndView;
 import com.example.fruit.model.Fruit;
 import com.example.fruit.service.FruitService;
 
@@ -20,7 +20,11 @@ import com.example.fruit.service.FruitService;
 
 public class FruitController {
 
-    
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+
     @Autowired
     private FruitService service;
 
