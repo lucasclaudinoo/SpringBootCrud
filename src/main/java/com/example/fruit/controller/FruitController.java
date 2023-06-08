@@ -20,11 +20,14 @@ import com.example.fruit.service.FruitService;
 
 public class FruitController {
 
-    @GetMapping("/")
-    public String home() {
-        return "index";
+    @GetMapping("/home")
+    public ModelAndView home() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index");
+        return modelAndView;
     }
 
+    
     @Autowired
     private FruitService service;
 
