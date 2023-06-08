@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.fruit.config;
 
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.spi.DocumentationType;
