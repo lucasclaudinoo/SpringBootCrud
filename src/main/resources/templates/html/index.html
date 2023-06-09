@@ -1,12 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cadastro de Frutas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function cadastrarFruta() {
+            var fruit = {
+                name: $("#name").val(),
+                amount: $("#amount").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/",
+                contentType: "application/json",
+                data: JSON.stringify(fruit),
+                success: function(response) {
+                    alert("Fruta cadastrada com sucesso!");
+                    location.reload();
+                },
+                error: function(error) {
+                    alert("Erro ao cadastrar a fruta. Por favor, tente novamente.");
+                    console.log(error);
+                }
+            });
+        }
+
+        function carregarFrutas() {
+            $.ajax({
+                type: "GET",
+                url: "/",
+                success: function(fruits) {
+                    var tableBody = $("#fruits-table tbody");
+                    tableBody.empty();
+
+                    fruits.forEach(function(fruit) {
+                        var row = "<tr>" +
+                            "<td>" + fruit.name + "</td>" +
+                            "<td>" + fruit.amount + "</td>" +
+                            "<td><button onclick='editarFruta(\"" + fruit.fruitId + "\")' class='btn btn-primary'>Editar</button></td>" +
+                            "<td><button onclick='excluirFruta(\"" + fruit.fruitId + "\")' class='btn btn-danger'>Excluir</button></td>" +
+                            "</tr>";
+                        tableBody.append(row);
+                    });
+                },
+                error: function(error) {
+                    alert("Erro ao carregar as frutas. Por favor, tente novamente.");
+                    console.log(error);
+                }
+            });
+        }
+
+        function excluirFruta(fruitId) {
+            if (confirm("Tem certeza que deseja excluir esta fruta?")) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/delete/" + fruitId,
+                    success: function(response) {
+                        alert("Fruta excluída com sucesso!");
+                        location.reload();
+                    },
+                    error: function(error) {
+                        alert("Erro ao excluir a fruta. Por favor, tente novamente.");
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        function editarFruta(fruitId) {
+            $.ajax({
+                type: "GET",
+                url: "/getById/" + fruitId,
+                success: function(fruit) {
+                    var newName = prompt("Novo nome:", fruit.name);
+                    var newAmount = prompt("Nova quantidade:", fruit.amount);
+
+                    if (newName !== null && newAmount !== null) {
+                        if (confirm("Tem certeza que deseja atualizar esta fruta?")) {
+                            var updatedFruit = {
+                                fruitId: fruitId,
+                                name: newName,
+                                amount: newAmount
+                            };
+
+                            $.ajax({
+                                type: "PUT",
+                                url: "/update",
+                                contentType: "application/json",
+                                data: JSON.stringify(updatedFruit),
+                                success: function(response) {
+                                    alert("Fruta atualizada com sucesso!");
+                                    location.reload();
+                                },
+                                error: function(error) {
+                                    alert("Erro ao atualizar a fruta. Por favor, tente novamente.");
+                                    console.log(error);
+                                }
+                            });
+                        }
+                    }
+                },
+                error: function(error) {
+                    alert("Erro ao recuperar os dados da fruta. Por favor, tente novamente.");
+                    console.log(error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            carregarFrutas();
+        });
+    </script>
 </head>
 <body>
-    <h1>aaaaaaaaaaaaaaa</h1>
+    <div class="container">
+        <h1 class="mt-4">Cadastro de Frutas</h1>
+        <form class="mt-4">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome:</label>
+                <input type="text" id="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">Quantidade:</label>
+                <input type="text" id="amount" class="form-control" required>
+            </div>
+            <button type="button" onclick="cadastrarFruta()" class="btn btn-primary">Cadastrar</button>
+        </form>
+
+        <h2 class="mt-4">Frutas Cadastradas</h2>
+        <table id="fruits-table" class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Editar</th>
+                    <th>Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
+
+
+<!-- 
+
+    
+• Adapter Adaptar uma interface existente para um cliente
+• Bridge Implementar um design que permita total desacoplamento entre interface e implementação
+• Façade Simplificar o uso de uma coleção de objetos
+• Composite Tratar composições e unidades uniformemente
+
+
+ -->

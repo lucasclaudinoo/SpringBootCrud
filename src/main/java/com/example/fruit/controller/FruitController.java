@@ -3,8 +3,10 @@ package com.example.fruit.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,15 +18,30 @@ import com.example.fruit.model.Fruit;
 import com.example.fruit.service.FruitService;
 
 @RestController
-@RequestMapping("/fruit")
+@RequestMapping("/")
 
 public class FruitController {
 
-    @GetMapping("/home")
+    @GetMapping("fruit/home")
     public ModelAndView home() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
+        modelAndView.setViewName("html/index");
+        
+        List<Fruit> fruits = service.getFruits();
+        modelAndView.addObject("fruits", fruits);
+        
         return modelAndView;
+    }
+
+
+    @GetMapping("/getById/{fruitId}")
+    public ResponseEntity<Fruit> getFruitById(@PathVariable String fruitId) {
+        Fruit fruit = service.getFruitById(fruitId);
+        if (fruit != null) {
+            return ResponseEntity.ok(fruit);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     
@@ -47,8 +64,9 @@ public class FruitController {
     // }
 
     @PutMapping("/update")
-    public Fruit modifyFruit(@RequestBody Fruit fruit) {
-        return service.updateFruit(fruit);
+    public String modifyFruit(@RequestBody Fruit fruit) {
+        service.updateFruit(fruit);
+        return "redirect:/fruit/home";
     }
 
     @DeleteMapping("/delete/{fruitId}")

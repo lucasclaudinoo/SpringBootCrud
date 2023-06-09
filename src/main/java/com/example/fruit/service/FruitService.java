@@ -38,15 +38,19 @@ public class FruitService {
         return repository.findByName(name);
     }
 
+    public Fruit getFruitById(String id) {
+        return repository.findById(id).orElse(null);
+    }
+
     public String deleteFruit(String id) {
         repository.deleteById(id);
         return "Fruit removed !! " + id;
     }
-
+    
     public Fruit updateFruit(Fruit fruit) {
         Fruit existingFruit = repository.findById(fruit.getFruitId()).orElse(null);
         existingFruit.setName(fruit.getName());
-        existingFruit.setAmount(fruit.getName());
+        existingFruit.setAmount(fruit.getAmount()); // Corrigir para setAmount(fruit.getAmount())
         return repository.save(existingFruit);
     }
 
